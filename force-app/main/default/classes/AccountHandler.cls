@@ -18,10 +18,12 @@ public with sharing class AccountHandler {
         }
     }
 
-    private static void editNames(List<Account> acc) {
-        for(Account a : acc) {
-            if(a.Name != null) {
-                a.Name = a.Name.toUpperCase();
+    private static void editNames(List<Account> acc, TriggerContext context) {
+        if(context.isBefore && context.isInsert) {
+            for(Account a : acc) {
+                if(a.Name != null) {
+                    a.Name = a.Name.toUpperCase();
+                }
             }
         }
     }
@@ -32,8 +34,6 @@ public with sharing class AccountHandler {
         Map<Id, Account> newMap, 
         TriggerContext context
         ) {
-            if(context.isBefore && context.isInsert) {
-              editNames(newList);
-            }
+            editNames(newList, context);
     }
 }
