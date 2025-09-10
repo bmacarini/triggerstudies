@@ -22,18 +22,27 @@
 @isTest
 private class AccountHandlerTest {
 
+    @TestSetup
+    static void createAccounts(){
+        List<Account> newListAcc = new List<Account>();
+        for(Integer i = 0; i < 5; i++){
+            newListAcc.add(new Account(Name = 'bruno ' + i));
+        }
+        insert newListAcc;
+    }
+
     @isTest
     static void uppercaseNameTest() {
-        List<Account> newListAcc = new List<Account>();
-        Account acc = new Account(Name = 'bruno');
-        newListAcc.add(acc);
+        List<Account> accs = [SELECT Id, Name FROM Account];
 
         AccountHandler.TriggerContext context = new AccountHandler.TriggerContext();
         context.isBefore = true;
         context.isInsert = true;
 
-        AccountHandler.execute(newListAcc, new List<Account>(), new Map<Id,Account>(), context);
+        AccountHandler.execute(accs, new List<Account>(), new Map<Id,Account>(), context);
 
-        System.assertEquals('bruno'.toUpperCase(), newListAcc[0].Name, 'Expected uppercase name');
+        for(Account acc : accs){
+            System.assertEquals(acc.Name.toUpperCase(), acc.Name, 'Expected uppercase name');
+        }
     }
 }

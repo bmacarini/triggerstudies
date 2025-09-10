@@ -24,12 +24,15 @@ private class AccountTriggerTest {
 
     @isTest
     static void beforeInsertTest() {
-        Account testAccount = new Account();
-        testAccount.Name = 'bruno';
-        insert testAccount;
-
-        Account result = [SELECT Name FROM Account WHERE Id = :testAccount.Id];
-
-        System.assertEquals('BRUNO', result.Name, 'Expected uppercase name');
+        List<Account> newListAcc = new List<Account>();
+        for(Integer i = 0; i < 5; i++){
+            newListAcc.add(new Account(Name = 'bruno ' + i));
+        }
+        insert newListAcc;
+        
+        List<Account> accs = [SELECT id, Name FROM Account];
+        for(Account acc : accs){
+            System.assertEquals(acc.Name.toUpperCase(), acc.Name, 'Expected uppercase name');
+        }
     }
 }
